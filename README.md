@@ -41,9 +41,9 @@ class Person
   attr_reader :name, :gender, :birthdate
 
   def initialize(name, gender, birthdate)
-    raise ArgumentError, "The name must be a string and must not be nil." if !name.is_a?(String) || name.empty?
-    raise ArgumentError, "The gender must be a symbol." unless gender.is_a?(Symbol)
-    raise ArgumentError, "The birthdate must be a date." unless birthdate.is_a?(Date)
+    raise ArgumentError, 'The name must be a string and must not be nil.' if !name.is_a?(String) || name.empty?
+    raise ArgumentError, 'The gender must be a symbol.' unless gender.is_a?(Symbol)
+    raise ArgumentError, 'The birthdate must be a date.' unless birthdate.is_a?(Date)
 
     @name = name
     @gender = gender

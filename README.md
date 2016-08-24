@@ -29,7 +29,7 @@ class Person
   def initialize(name, gender, birthdate)
     @name = name
     @gender = gender
-    @birthdate = date
+    @birthdate = birthdate
   end
 end
 ```
@@ -47,7 +47,7 @@ class Person
 
     @name = name
     @gender = gender
-    @birthdate = date
+    @birthdate = birthdate
   end
 end
 ```
@@ -71,7 +71,7 @@ class Person
 
     @name = name
     @gender = gender
-    @birthdate = date
+    @birthdate = birthdate
   end
 end
 ```

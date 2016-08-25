@@ -61,13 +61,13 @@ class Person
   attr_reader :name, :gender, :birthdate
 
   def initialize(name, gender, birthdate)
-    argument(name).should(:be_a, String)
-    argument(gender).should(:be_a, Symbol)
-    argument(birthdate).should(:be_a, Date)
+    argument(name).should be_a(String)
+    argument(gender).should be_a(Symbol)
+    argument(birthdate).should be_a(Date)
 
-    argument(name).should_not(:be, nil)
-    argument(gender).should_not(:be, nil)
-    argument(birthdate).should_not(:be, nil)
+    argument(name).should_not be_nil
+    argument(gender).should_not be_nil
+    argument(birthdate).should_not be_nil
 
     @name = name
     @gender = gender

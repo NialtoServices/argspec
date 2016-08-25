@@ -8,9 +8,9 @@ module ArgumentSpecification
     #
     def require!
       require 'argspec/constants'
+      require 'argspec/dsl'
       require 'argspec/matchers'
       require 'argspec/argument'
-      require 'argspec/dsl'
 
       nil
     end

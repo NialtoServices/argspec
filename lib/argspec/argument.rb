@@ -1,130 +1,63 @@
 module ArgumentSpecification
   class Argument
-    attr_reader :object
+    attr_reader :actual
 
     # Create a new argument
     #
     # Arguments:
-    #   object: (?)
+    #   actual: (Object)
     #
     # Example:
     #   >> test = :test
     #   >> ArgumentSpecification::Argument.new(test)
-    #   => #<Argument:0x00000000000000 @object=:test>
+    #   => #<Argument:0x00000000000000 @actual=:test>
     #
-    def initialize(object)
-      @object = object
+    def initialize(actual)
+      @actual = actual
     end
 
-    # Should
+    # Ensure the argument matches
     #
     # Arguments:
-    #   matcher: (Symbol) A method name as a symbol (see the matchers.rb file)
-    #   args: (Splat)
+    #   matcher: (Matchers::BaseMatcher)
     #
     # Example:
-    #   >> argument.should(:be, true)
+    #   >> argument.should be_a(Symbol)
     #   => nil
     #
     # Raises:
-    #   ArgumentError: If the matcher determines the object does not match
+    #   ArgumentError: When the argument does not match
     #
-    def should(matcher, *args)
-      ensure_matcher(matcher)
+    def should(matcher)
+      return nil unless matcher.is_a?(Matchers::BaseMatcher)
 
-      return if Matchers.send(matcher, self, *args)
+      matcher.send(:actual=, @actual)
 
-      raise ArgumentError, "'#{prettify_object}' should #{prettify_matcher(matcher)} '#{prettify_args(args)}'"
+      return nil if matcher.matches?
+
+      raise ArgumentError, matcher.failure_message
     end
 
-    # Should not
+    # Ensure the argument does not match
     #
     # Arguments:
-    #   matcher: (Symbol) A method name as a symbol (see the matchers.rb file)
-    #   args: (Splat)
+    #   matcher: (Matchers::BaseMatcher)
     #
     # Example:
-    #   >> argument.should_not(:be, true)
+    #   >> argument.should_not be_a(Symbol)
     #   => nil
     #
     # Raises:
-    #   ArgumentError: If the matcher determines the object does match
+    #   ArgumentError: When the argument matches
     #
-    def should_not(matcher, *args)
-      ensure_matcher(matcher)
+    def should_not(matcher)
+      return nil unless matcher.is_a?(Matchers::BaseMatcher)
 
-      return if Matchers.send(matcher, self, *args) == false
+      matcher.send(:actual=, @actual)
 
-      raise ArgumentError, "'#{prettify_object}' should not #{prettify_matcher(matcher)} '#{prettify_args(args)}'"
-    end
+      return nil unless matcher.matches?
 
-    private
-    # Ensure a matcher exists
-    #
-    # Arguments:
-    #   matcher: (Symbol)
-    #
-    # Example:
-    #   >> ensure_matcher(:be)
-    #   => nil
-    #
-    # Raises:
-    #   ArgumentError: If the specified matcher does not exist
-    #
-    def ensure_matcher(matcher)
-      return if Matchers.all.include?(matcher)
-
-      raise ArgumentError, "The matcher '#{matcher}' does not exist."
-    end
-
-    # Prettify a matcher
-    #
-    # Arguments:
-    #   matcher: (String)
-    #
-    # Example:
-    #   >> prettify_matcher(:be_a)
-    #   => "be a"
-    #
-    def prettify_matcher(matcher)
-      matcher.to_s.gsub('_', ' ')
-    end
-
-    # Prettify arguments
-    #
-    # Arguments:
-    #   args: (Array)
-    #
-    # Example:
-    #   >> prettify_args([:a])
-    #   => ":a"
-    #
-    def prettify_args(args)
-      pretty_args = args.map do |argument|
-        if argument == nil
-          next 'nil'
-        elsif argument.is_a?(Symbol)
-          next ":#{argument}"
-        else
-          next argument
-        end
-      end
-
-      return 'nil' if pretty_args.empty?
-      return pretty_args.first if pretty_args.count == 1
-
-      pretty_args
-    end
-
-    # Prettify the object
-    #
-    # Example:
-    #   >> # argument.object = :a
-    #   >> prettify_object
-    #   => ":a"
-    #
-    def prettify_object
-      prettify_args([@object])
+      raise ArgumentError, matcher.failure_message_when_negated
     end
   end
 end

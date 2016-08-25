@@ -65,9 +65,8 @@ class Person
     argument(gender).should be_a(Symbol)
     argument(birthdate).should be_a(Date)
 
-    argument(name).should_not be_nil
-    argument(gender).should_not be_nil
-    argument(birthdate).should_not be_nil
+    argument(name).should_not be_empty
+    argument(gender).should_not be_empty
 
     @name = name
     @gender = gender

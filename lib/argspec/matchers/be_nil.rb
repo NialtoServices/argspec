@@ -10,7 +10,11 @@ module ArgumentSpecification
       #   => true
       #
       def matches?
-        @actual.nil?
+        begin
+          @actual.nil?
+        rescue NoMethodError
+          false
+        end
       end
     end
   end

@@ -1,19 +1,26 @@
 module ArgumentSpecification
   class Argument
+    include ArgumentSpecification::DSL::Matchers
+
     attr_reader :actual
 
     # Create a new argument
     #
     # Arguments:
     #   actual: (Object)
+    #   block: (Block)
     #
     # Example:
     #   >> test = :test
-    #   >> ArgumentSpecification::Argument.new(test)
+    #   >> ArgumentSpecification::Argument.new(test) do
+    #   >>   should_not be_nil
+    #   >> end
     #   => #<Argument:0x00000000000000 @actual=:test>
     #
-    def initialize(actual)
+    def initialize(actual, &block)
       @actual = actual
+
+      instance_eval(&block)
     end
 
     # Ensure the argument matches
@@ -22,18 +29,18 @@ module ArgumentSpecification
     #   matcher: (Matchers::BaseMatcher)
     #
     # Example:
-    #   >> argument.should be_a(Symbol)
-    #   => nil
+    #   >> should be_a(Symbol)
+    #   => #<Argument:0x00000000000000 @actual=:test>
     #
     # Raises:
     #   ArgumentError: When the argument does not match
     #
     def should(matcher)
-      return nil unless matcher.is_a?(Matchers::BaseMatcher)
+      return self unless matcher.is_a?(Matchers::BaseMatcher)
 
       matcher.send(:actual=, @actual)
 
-      return nil if matcher.matches?
+      return self if matcher.matches?
 
       raise ArgumentError, matcher.failure_message
     end
@@ -44,20 +51,40 @@ module ArgumentSpecification
     #   matcher: (Matchers::BaseMatcher)
     #
     # Example:
-    #   >> argument.should_not be_a(Symbol)
-    #   => nil
+    #   >> should_not be_a(Symbol)
+    #   => #<Argument:0x00000000000000 @actual=:test>
     #
     # Raises:
     #   ArgumentError: When the argument matches
     #
     def should_not(matcher)
-      return nil unless matcher.is_a?(Matchers::BaseMatcher)
+      return self unless matcher.is_a?(Matchers::BaseMatcher)
 
       matcher.send(:actual=, @actual)
 
-      return nil unless matcher.matches?
+      return self unless matcher.matches?
 
       raise ArgumentError, matcher.failure_message_when_negated
+    end
+
+    # Alias for should
+    #
+    # Example:
+    #   >> and be_a(Symbol)
+    #   => #<Argument:0x00000000000000 @actual=:test>
+    #
+    def and(*args)
+      should(*args)
+    end
+
+    # Alias for should_not
+    #
+    # Example:
+    #   >> and_not be_a(Symbol)
+    #   => #<Argument:0x00000000000000 @actual=:test>
+    #
+    def and_not(*args)
+      should_not(*args)
     end
   end
 end

@@ -17,7 +17,7 @@ module ArgumentSpecification
           names.each do |name|
             next unless name.is_a?(Symbol)
 
-            DSL.register_matcher(self, name)
+            DSL::Matchers.register(self, name)
           end
         end
       end

@@ -3,19 +3,11 @@ module ArgumentSpecification
     class Be < BaseMatcher
       matcher_name :be
 
-      OPERATORS = {
-        :==  => :equal,
-        :=== => :case_equal,
-        :=~  => :match,
-        :<   => :be_less_than,
-        :>   => :be_greater_than,
-        :<=  => :be_less_than_or_equal_to,
-        :>=  => :be_greater_than_or_equal_to
-      }
-
-      OPERATORS.keys.each do |operator|
+      [:==, :===, :=~, :<, :>, :<=, :>=].each do |operator|
         define_method(operator) do |expected|
-          send(OPERATORS[operator], expected)
+          instance = BeComparedTo.new(operator, expected)
+          instance.send(:setup, operator, [operator, expected])
+          instance
         end
       end
 

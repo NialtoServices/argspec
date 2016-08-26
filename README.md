@@ -61,12 +61,13 @@ class Person
   attr_reader :name, :gender, :birthdate
 
   def initialize(name, gender, birthdate)
-    argument(name).should be_a(String)
-    argument(gender).should be_a(Symbol)
-    argument(birthdate).should be_a(Date)
+    argument(name) do
+      should be_a(String)
+      should_not be_empty
+    end
 
-    argument(name).should_not be_empty
-    argument(gender).should_not be_empty
+    argument(gender) { should be_a(Symbol) }
+    argument(birthdate) { should be_a(Date) }
 
     @name = name
     @gender = gender
@@ -76,6 +77,26 @@ end
 ```
 
 That's better. It's now really clear what validations you're performing.
+
+Method chaining is also supported:
+
+```ruby
+class Person
+  include ArgumentSpecification::DSL
+
+  attr_reader :name, :gender, :birthdate
+
+  def initialize(name, gender, birthdate)
+    argument(name) { should(be_a(Symbol)).and_not(be_empty) }
+    argument(gender) { should be_a(Symbol) }
+    argument(birthdate) { should be_a(Date) }
+
+    @name = name
+    @gender = gender
+    @birthdate = birthdate
+  end
+end
+```
 
 ## Development
 

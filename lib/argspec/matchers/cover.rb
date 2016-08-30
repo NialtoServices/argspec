@@ -1,7 +1,7 @@
 module ArgumentSpecification
   module Matchers
     class Cover < BaseMatcher
-      matcher_name :cover
+      matcher_name :cover, :contain
 
       attr_reader :values
 
@@ -11,8 +11,8 @@ module ArgumentSpecification
       #   values: (Splat)
       #
       # Example:
-      #   >> ArgumentSpecification::Matchers::Cover.new(1, 2)
-      #   => #<ArgumentSpecification::Matchers::Cover:0x00000000000000 @values=[1, 2]>
+      #   >> ArgumentSpecification::Matchers::Cover.new(:a, :b)
+      #   => #<ArgumentSpecification::Matchers::Cover:0x00000000000000 @values=[:a, :b]>
       #
       def initialize(*values)
         @values = values
@@ -25,8 +25,12 @@ module ArgumentSpecification
       #   => true
       #
       def matches?
-        @values.each do |value|
-          return false unless @actual.include?(value)
+        symbol = @actual.is_a?(Symbol)
+        actual = symbol ? @actual.to_s : @actual
+        values = symbol ? @values.map { |v| v.is_a?(Symbol) ? v.to_s : v } : @values
+
+        values.each do |value|
+          return false unless actual.include?(value)
         end
 
         true

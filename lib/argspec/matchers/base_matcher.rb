@@ -22,7 +22,7 @@ module ArgumentSpecification
         end
       end
 
-      attr_reader :actual, :metadata
+      attr_reader :actual, :block, :metadata
 
       # The failure message when using 'should'
       #
@@ -100,6 +100,19 @@ module ArgumentSpecification
       #
       def actual=(actual)
         @actual = actual
+      end
+
+      # Set the block
+      #
+      # Arguments:
+      #   block: (Proc)
+      #
+      # Example:
+      #   >> matcher.block = Proc.new {}
+      #   => #<Proc:0x00000000000000>
+      #
+      def block=(block)
+        @block = block
       end
 
       # Prettify a matcher

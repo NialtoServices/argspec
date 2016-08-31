@@ -18,8 +18,9 @@ module ArgumentSpecification
 
           module_eval <<-EOS
             def #{name}(*args, &block)
-              instance = #{klass}.new(*args, &block)
+              instance = #{klass}.new(*args)
               instance.send(:setup, '#{name}'.to_sym, args)
+              instance.send(:block=, block) if block_given?
               instance
             end
           EOS

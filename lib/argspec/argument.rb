@@ -27,6 +27,7 @@ module ArgumentSpecification
     #
     # Arguments:
     #   matcher: (Matchers::BaseMatcher)
+    #   block: (Block)
     #
     # Example:
     #   >> should be_a(Symbol)
@@ -35,10 +36,11 @@ module ArgumentSpecification
     # Raises:
     #   ArgumentError: When the argument does not match
     #
-    def should(matcher)
+    def should(matcher, &block)
       return self unless matcher.is_a?(Matchers::BaseMatcher)
 
       matcher.send(:actual=, @actual)
+      matcher.send(:block=, block) if block_given?
 
       return self if matcher.matches?
 
@@ -49,6 +51,7 @@ module ArgumentSpecification
     #
     # Arguments:
     #   matcher: (Matchers::BaseMatcher)
+    #   block: (Block)
     #
     # Example:
     #   >> should_not be_a(Symbol)
@@ -57,10 +60,11 @@ module ArgumentSpecification
     # Raises:
     #   ArgumentError: When the argument matches
     #
-    def should_not(matcher)
+    def should_not(matcher, &block)
       return self unless matcher.is_a?(Matchers::BaseMatcher)
 
       matcher.send(:actual=, @actual)
+      matcher.send(:block=, block) if block_given?
 
       return self unless matcher.matches?
 
@@ -73,8 +77,8 @@ module ArgumentSpecification
     #   >> and be_a(Symbol)
     #   => #<Argument:0x00000000000000 @actual=:test>
     #
-    def and(*args)
-      should(*args)
+    def and(*args, &block)
+      should(*args, &block)
     end
 
     # Alias for should_not
@@ -83,8 +87,8 @@ module ArgumentSpecification
     #   >> and_not be_a(Symbol)
     #   => #<Argument:0x00000000000000 @actual=:test>
     #
-    def and_not(*args)
-      should_not(*args)
+    def and_not(*args, &block)
+      should_not(*args, &block)
     end
   end
 end

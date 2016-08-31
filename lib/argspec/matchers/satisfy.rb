@@ -3,21 +3,19 @@ module ArgumentSpecification
     class Satisfy < BaseMatcher
       matcher_name :satisfy
 
-      attr_reader :description, :block
+      attr_reader :description
 
       # Create a new matcher instance
       #
       # Arguments:
       #   description: (String)
-      #   block: (Block)
       #
       # Example:
-      #   >> ArgumentSpecification::Matchers::Satisfy.new('always pass') { true }
+      #   >> ArgumentSpecification::Matchers::Satisfy.new('always pass')
       #   => #<ArgumentSpecification::Matchers::Satisfy:0x00000000000000 @block=#<Proc:0x00000000000000>>
       #
-      def initialize(description, &block)
+      def initialize(description)
         @description = description
-        @block = block
       end
 
       # The failure message when using 'should'
@@ -59,7 +57,10 @@ module ArgumentSpecification
       #   => true
       #
       def matches?
-        @block.call(@actual)
+        p @block
+        return @block.call(@actual) if @block
+
+        false
       end
     end
   end

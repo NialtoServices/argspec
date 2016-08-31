@@ -71,6 +71,7 @@ module ArgumentSpecification
         actual = @actual.is_a?(Array) ? @actual : [@actual]
         actual.each do |value|
           @expected.send(:actual=, value)
+          @expected.send(:block=, @block) if @block
 
           return false unless @expected.matches?
         end

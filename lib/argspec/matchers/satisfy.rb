@@ -57,7 +57,6 @@ module ArgumentSpecification
       #   => true
       #
       def matches?
-        p @block
         return @block.call(@actual) if @block
 
         false
